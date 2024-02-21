@@ -72,3 +72,6 @@ install(TARGETS ToDoList2
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(ToDoList2)
 endif()
+
+file(GLOB MY_ICONS "${CMAKE_CURRENT_SOURCE_DIR}/icons/*.png")
+file(COPY ${MY_ICONS} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/icons")

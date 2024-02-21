@@ -4,18 +4,6 @@
 TaskWidget::TaskWidget(QWidget *parent)
     : QWidget{parent}
 {
-    QLabel *label=new QLabel(this);
-    label->setText("Hi from TaskWidget");
-    label->setGeometry(10,10,300,20);
-
-    QPushButton *but=new QPushButton(this);
-    but->setText("button from TaskWidget");
-    but->setGeometry(10,40,300,30);
-
-    Task *new_task = new Task("Task name");
-    QLabel *task_name=new QLabel(this);
-    task_name->setText(new_task->getTaskName());
-
 }
 
 TaskWidget::TaskWidget(const Task *task, QWidget *parent): QWidget{parent}
@@ -29,6 +17,7 @@ TaskWidget::TaskWidget(const Task *task, QWidget *parent): QWidget{parent}
     v_option_box->setSpacing(10);
 
     check_box = new QCheckBox(this);
+    check_box->setStyleSheet("QCheckBox::indicator { width: 20px; height: 20px;}");
     if(task->getState() == State::Done)
         check_box->setCheckState(Qt::CheckState::Checked);
     else
@@ -38,20 +27,17 @@ TaskWidget::TaskWidget(const Task *task, QWidget *parent): QWidget{parent}
     delete_button = new QPushButton(this);
     delete_button->setFixedSize(QSize(25,25));
     //icon = QPixmap(QCoreApplication::applicationDirPath()+"/delete.png");
-    icon = QPixmap ("C:/qt projects/ToDoList2/delete.png");
-    delete_button->setIcon(icon);
+    delete_icon = QPixmap ("icons/delete.png");
+    delete_button->setIcon(delete_icon);
     v_option_box->addWidget(delete_button);
 
     edit_button = new QPushButton(this);
     edit_button->setFixedSize(QSize(25,25));
-    //icon = QPixmap(QCoreApplication::applicationDirPath()+"/delete.png");
-    //icon = QPixmap ("C:/qt projects/ToDoList2/delete.png");
-    //edit_button->setIcon(icon);
-    edit_button->setText("X");
+    edit_icon = QPixmap("icons/edit.png");
+    edit_button->setIcon(edit_icon);
     v_option_box->addWidget(edit_button);
 
     v_label_box = new QVBoxLayout();
-    v_label_box->setSpacing(5);
 
     task_name=new QLabel(this);
     task_name->setText(task->getTaskName());
@@ -59,7 +45,7 @@ TaskWidget::TaskWidget(const Task *task, QWidget *parent): QWidget{parent}
     v_label_box->addWidget(task_name);
 
     task_date=new QLabel(this);
-    task_date->setText(task->getDate().toString());
+    task_date->setText(task->getDate().toString("dd.MM.yyyy"));
     v_label_box->addWidget(task_date);
 
     task_description = new QLabel(this);

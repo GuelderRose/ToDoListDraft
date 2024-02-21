@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QDate>
+#include <QJsonObject>
 
 enum class State {
     InProgress,
@@ -30,6 +31,8 @@ public:
     void setDescription(const QString& description);
     void setState(State state);
     void changeState();
+    QJsonObject convertToJson() const;
+    static Task* createFromJson(QJsonObject json);
 signals:
 
 private:

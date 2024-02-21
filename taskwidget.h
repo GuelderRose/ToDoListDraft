@@ -40,7 +40,8 @@ private:
     QCheckBox *check_box;
     QPushButton *delete_button;
     QPushButton *edit_button;
-    QPixmap icon;
+    QPixmap delete_icon;
+    QPixmap edit_icon;
 
     QVBoxLayout *v_label_box;
     QLabel *task_name;

@@ -70,3 +70,34 @@ void Task::changeState()
     else
         state = State::Done;
 }
+
+QJsonObject Task::convertToJson() const
+{
+    QJsonObject recordObject;
+    recordObject.insert("TaskName", QJsonValue::fromVariant(task_name));
+    recordObject.insert("Description", QJsonValue::fromVariant(description));
+    recordObject.insert("IsDone", QJsonValue::fromVariant(bool(state)));
+    recordObject.insert("Date", QJsonValue::fromVariant(date.toString("dd.MM.yyyy")));
+    return recordObject;
+}
+
+Task *Task::createFromJson(QJsonObject json)
+{
+    Task* task = new Task();
+    if(json.contains("TaskName"))
+        task->setTaskName(json["TaskName"].toString());
+    if(json.contains("Description"))
+        task->setDescription(json["Description"].toString());
+    if(json.contains("IsDone"))
+        task->setState(State(json["IsDone"].toBool()));
+    if(json.contains("Date")){
+        if (json["Date"].isNull())
+            task->setDate(QDate());
+        else{
+            auto s = json["Date"].toString();
+            auto t = QDate::fromString(s,  "dd.MM.yyyy");
+            task->setDate(QDate::fromString(json["Date"].toString(), "dd.MM.yyyy"));
+        }
+    }
+    return task;
+}

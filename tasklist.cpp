@@ -23,26 +23,26 @@ void TaskList::deleteTask(Task *task)
     delete task;
 }
 
-TaskList TaskList::filterFromDate(QDate start)
+TaskList TaskList::filterFromDate(QDate start)const
 {
     TaskList filtred;
     for(auto task: tasks){
-        if(!task->getDate().isNull() || task->getDate()>= start)
+        if(task->getDate().isNull() || task->getDate()>= start)
             filtred.addTask(task);
     }
     return filtred;
 }
 
-TaskList TaskList::filterToDate(QDate finish)
+TaskList TaskList::filterToDate(QDate finish)const
 {
     TaskList filtred;
     for(auto task: tasks)
-        if(!task->getDate().isNull() || task->getDate()<= finish)
+        if(task->getDate().isNull() || task->getDate()<= finish)
             filtred.addTask(task);
     return filtred;
 }
 
-TaskList TaskList::filterByState(State state)
+TaskList TaskList::filterByState(State state)const
 {
     TaskList filtred;
     for(auto task: tasks)
@@ -51,7 +51,7 @@ TaskList TaskList::filterByState(State state)
     return filtred;
 }
 
-TaskList TaskList::filterByName(QString pattern)
+TaskList TaskList::filterByName(QString pattern)const
 {
     QStringList words = pattern.split(' ');
     TaskList filtred;
@@ -65,7 +65,7 @@ TaskList TaskList::filterByName(QString pattern)
     return filtred;
 }
 
-TaskList TaskList::filterByDescription(QString pattern)
+TaskList TaskList::filterByDescription(QString pattern)const
 {
     QStringList words = pattern.split(' ');
     TaskList filtred;
@@ -79,7 +79,52 @@ TaskList TaskList::filterByDescription(QString pattern)
     return filtred;
 }
 
+QJsonArray TaskList::convertToJson() const
+{
+    QJsonArray taskListJson;
+    for(const auto* task: tasks)
+        taskListJson.push_back(task->convertToJson());
+    return taskListJson;
+}
 
+TaskList TaskList::createFromJson(QJsonArray json)
+{
+    TaskList result;
+    for(auto task_json: json){
+        if(!task_json.isObject())
+            return TaskList();
+        Task* task = Task::createFromJson(task_json.toObject());
+        if(task)
+            result.addTask(task);
+        else
+            return TaskList();
+    }
+    return result;
+}
+
+QDate TaskList::getMinDate() const
+{
+    QDate minDate = QDate();
+    for(auto* task: tasks){
+        if(task->getDate().isValid()){
+            if (minDate.isNull() || task->getDate() < minDate)
+                minDate = task->getDate();
+        }
+    }
+    return minDate;
+}
+
+QDate TaskList::getMaxDate() const
+{
+    QDate maxDate = QDate();
+    for(auto* task: tasks){
+        if(task->getDate().isValid()){
+            if (maxDate.isNull() || task->getDate() > maxDate)
+                maxDate = task->getDate();
+        }
+    }
+    return maxDate;
+}
 
 // void TaskList::editTask(int task_id, const QString& task_name, const QDate& date, const QString& description, const State state)
 // {

@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QSet>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "task.h"
 
@@ -17,14 +19,17 @@ public:
     //void editTask(int task_id, const QString& task_name, const QDate& date, const QString& description, const State state);
     //void setState(int task_id, const State state);
     int size() const { return tasks.size(); }
-    TaskList filterFromDate(QDate start);
-    TaskList filterToDate(QDate finish);
-    TaskList filterByState(State state);
-    TaskList filterByName(QString pattern);
-    TaskList filterByDescription(QString pattern);
+    TaskList filterFromDate(QDate start)const;
+    TaskList filterToDate(QDate finish)const;
+    TaskList filterByState(State state)const;
+    TaskList filterByName(QString pattern)const;
+    TaskList filterByDescription(QString pattern)const;
     friend QSet<Task*>::iterator begin(TaskList &x);
     friend QSet<Task*>::iterator end(TaskList &x);
-
+    QJsonArray convertToJson() const;
+    static TaskList createFromJson(QJsonArray json);
+    QDate getMinDate() const;
+    QDate getMaxDate() const;
 signals:
 
 private:
