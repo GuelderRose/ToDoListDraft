@@ -7,17 +7,15 @@
 
 enum class State {
     InProgress,
-    Done,
-    Overdue
+    Done
 };
 
 
-
-class Task : public QObject
+class Task
 {
-    Q_OBJECT
+
 public:
-    explicit Task(QObject *parent = nullptr);
+    explicit Task();
 
     Task(QString task_name);
     Task(QString task_name, QDate date);
@@ -31,6 +29,7 @@ public:
     void setDate(const QDate& date);
     void setDescription(const QString& description);
     void setState(State state);
+    void changeState();
 signals:
 
 private:

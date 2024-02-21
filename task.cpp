@@ -1,7 +1,6 @@
 #include "task.h"
 
-Task::Task(QObject *parent)
-    : QObject{parent}
+Task::Task():state(State::InProgress)
 {}
 
 Task::Task(QString task_name)
@@ -62,4 +61,12 @@ void Task::setDescription(const QString& description)
 void Task::setState(State state)
 {
     this->state = state;
+}
+
+void Task::changeState()
+{
+    if(this->state == State::Done)
+        state = State::InProgress;
+    else
+        state = State::Done;
 }

@@ -25,6 +25,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         taskwidget.h taskwidget.cpp
         task.h task.cpp
         tasklist.h tasklist.cpp
+        taskcreatordialog.h taskcreatordialog.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
