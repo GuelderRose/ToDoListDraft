@@ -2,87 +2,92 @@
 
 
 TaskCreatorDialog::TaskCreatorDialog(QWidget* parent, Task task):
-    default_task(task) {
-
+    default_task(task)
+{
     this->move(parent->pos().x()+35,parent->pos().y());
 
-    QVBoxLayout* vBoxLayout = new QVBoxLayout(this);
+    QVBoxLayout* v_box = new QVBoxLayout(this);
+
+    // Adding calendar
+
+    calendar_widget = new QCalendarWidget(this);
+    calendar_widget->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
+    calendar_widget->setSelectedDate(default_task.getDate());
+    v_box->addWidget(calendar_widget);
+    v_box->addSpacing(5);
+
+    // Adding task name
+
+    task_name_label = new QLabel(this);
+    task_name_label->setFrameStyle(QFrame::Sunken);
+    task_name_label->setText("Task name:");
+    v_box->addWidget(task_name_label);
+
+    task_name_edit = new QLineEdit(this);
+    task_name_edit->setText(default_task.getTaskName());
+    v_box->addWidget(task_name_edit);
+    v_box->addSpacing(5);
+
+    // Adding task description
+
+    task_description_label = new QLabel(this);
+    task_description_label->setFrameStyle(QFrame::Sunken);
+    task_description_label->setText("Task description:");
+    v_box->addWidget(task_description_label);
+
+    task_description_edit = new QLineEdit(this);
+    task_description_edit->setText(default_task.getDescription());
+    v_box->addWidget(task_description_edit);
+    v_box->addSpacing(5);
+
+    // Adding task state
+
+    task_state_label = new QLabel(this);
+    task_state_label->setFrameStyle(QFrame::Sunken);
+    task_state_label->setText("Task state:");
+    v_box->addWidget(task_state_label);
+
+    task_state_edit = new QComboBox(this);
+    task_state_edit->addItems({"In Progress", "Done"});
+    task_state_edit->setCurrentIndex((int)default_task.getState());
+    v_box->addWidget(task_state_edit);
+    v_box->addSpacing(10);
+
+    // Adding buttons
+
+    QHBoxLayout* h_bottom = new QHBoxLayout(this);
+
+    ok_button = new QPushButton(this);
+    ok_button->setText("OK");
+    h_bottom->addWidget(ok_button);
+
+    cancel_button = new QPushButton(this);
+    cancel_button->setText("Cancel");
+    h_bottom->addWidget(cancel_button);
 
 
-    calendarWidget = new QCalendarWidget(this);
-    calendarWidget->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
-    calendarWidget->setSelectedDate(default_task.getDate());
-    vBoxLayout->addWidget(calendarWidget);
-    vBoxLayout->addSpacing(5);
-
-
-    taskNameLabel = new QLabel(this);
-    taskNameLabel->setFrameStyle(QFrame::Sunken);
-    taskNameLabel->setText("Task name:");
-    vBoxLayout->addWidget(taskNameLabel);
-
-    taskNameEdit = new QLineEdit(this);
-    taskNameEdit->setText(default_task.getTaskName());
-    vBoxLayout->addWidget(taskNameEdit);
-    vBoxLayout->addSpacing(5);
-
-
-    taskDescriptionLabel = new QLabel(this);
-    taskDescriptionLabel->setFrameStyle(QFrame::Sunken);
-    taskDescriptionLabel->setText("Task description:");
-    vBoxLayout->addWidget(taskDescriptionLabel);
-
-    taskDescriptionEdit = new QLineEdit(this);
-    taskDescriptionEdit->setText(default_task.getDescription());
-    vBoxLayout->addWidget(taskDescriptionEdit);
-    vBoxLayout->addSpacing(5);
-
-
-    taskStateLabel = new QLabel(this);
-    taskStateLabel->setFrameStyle(QFrame::Sunken);
-    taskStateLabel->setText("Task state:");
-    vBoxLayout->addWidget(taskStateLabel);
-
-    taskStateEdit = new QComboBox(this);
-    taskStateEdit->addItems({"In Progress", "Done"});
-    taskStateEdit->setCurrentIndex((int)default_task.getState());
-    vBoxLayout->addWidget(taskStateEdit);
-    vBoxLayout->addSpacing(10);
-
-
-    QHBoxLayout* bottomSection = new QHBoxLayout(this);
-
-    QPushButton* okButton = new QPushButton(this);
-    okButton->setText("OK");
-    bottomSection->addWidget(okButton);
-
-    QPushButton* cancelButton = new QPushButton(this);
-    cancelButton->setText("Cancel");
-    bottomSection->addWidget(cancelButton);
-
-
-    vBoxLayout->addLayout(bottomSection);
-    setLayout(vBoxLayout);
+    v_box->addLayout(h_bottom);
+    setLayout(v_box);
     setWindowTitle("Task editor");
 
 
 
-
-    connect(taskNameEdit, &QLineEdit::textChanged,
+    connect(task_name_edit, &QLineEdit::textChanged,
             this,  &TaskCreatorDialog::taskNameChanged);
-    connect(taskDescriptionEdit, &QLineEdit::textChanged,
+    connect(task_description_edit, &QLineEdit::textChanged,
             this,  &TaskCreatorDialog::taskDescriptionChanged);
-    connect(taskStateEdit, &QComboBox::currentIndexChanged,
+    connect(task_state_edit, &QComboBox::currentIndexChanged,
             this,  &TaskCreatorDialog::taskStateChanged);
-    connect(calendarWidget, &QCalendarWidget::clicked,
+    connect(calendar_widget, &QCalendarWidget::clicked,
             this,  &TaskCreatorDialog::taskDateChanged);
-    connect(okButton, &QPushButton::clicked,
+    connect(ok_button, &QPushButton::clicked,
             this,  &TaskCreatorDialog::okButtonClicked);
-    connect(cancelButton, &QPushButton::clicked,
+    connect(cancel_button, &QPushButton::clicked,
             this,  &QDialog::reject);
 }
 
-QVariant TaskCreatorDialog::getTask(Task task, QWidget *parent){
+QVariant TaskCreatorDialog::getTask(Task task, QWidget *parent)
+{
     TaskCreatorDialog dlg = TaskCreatorDialog(parent, task);
     dlg.setModal(true);
     if (dlg.exec())
@@ -116,11 +121,12 @@ void TaskCreatorDialog::okButtonClicked()
         this->accept();
     else
     {
-        QMessageBox msgBox = QMessageBox(QMessageBox::Warning, "Warning",  "Task name is empty!",QMessageBox::Ok,this);
+        QMessageBox msg_box = QMessageBox(QMessageBox::Warning, "Warning",
+                                          "Task name is empty!",QMessageBox::Ok,this);
         QIcon icon = QIcon();
         icon.addPixmap(QPixmap("Warning"), QIcon::Normal);
-        msgBox.setWindowIcon(icon);
-        msgBox.move(this->pos().x()+62,this->pos().y()+200);
-        msgBox.exec();
+        msg_box.setWindowIcon(icon);
+        msg_box.move(this->pos().x()+62,this->pos().y()+200);
+        msg_box.exec();
     }
 }

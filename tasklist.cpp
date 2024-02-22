@@ -2,28 +2,22 @@
 
 TaskList::TaskList()
 {
-
 }
 
 void TaskList::addTask(Task* new_task)
 {
-    tasks.insert(new_task);
+    tasks.push_back(new_task);
 }
-
-// void TaskList::deleteTask(int task_id)
-// {
-//     // if (task_id < tasks.size()) {
-//     //     tasks.erase(tasks.begin() + task_id);
-//     // }
-// }
 
 void TaskList::deleteTask(Task *task)
 {
-    tasks.remove(task);
+    for(int i = 0; i < tasks.size(); i++)
+        if(tasks[i] == task)
+            tasks.erase(tasks.begin() + i);
     delete task;
 }
 
-TaskList TaskList::filterFromDate(QDate start)const
+TaskList TaskList::filterFromDate(QDate start) const
 {
     TaskList filtred;
     for(auto task: tasks){
@@ -42,7 +36,7 @@ TaskList TaskList::filterToDate(QDate finish)const
     return filtred;
 }
 
-TaskList TaskList::filterByState(State state)const
+TaskList TaskList::filterByState(State state) const
 {
     TaskList filtred;
     for(auto task: tasks)
@@ -51,7 +45,7 @@ TaskList TaskList::filterByState(State state)const
     return filtred;
 }
 
-TaskList TaskList::filterByName(QString pattern)const
+TaskList TaskList::filterByName(QString pattern) const
 {
     QStringList words = pattern.split(' ');
     TaskList filtred;
@@ -65,7 +59,7 @@ TaskList TaskList::filterByName(QString pattern)const
     return filtred;
 }
 
-TaskList TaskList::filterByDescription(QString pattern)const
+TaskList TaskList::filterByDescription(QString pattern) const
 {
     QStringList words = pattern.split(' ');
     TaskList filtred;
@@ -126,19 +120,6 @@ QDate TaskList::getMaxDate() const
     return maxDate;
 }
 
-// void TaskList::editTask(int task_id, const QString& task_name, const QDate& date, const QString& description, const State state)
-// {
-//     tasks[task_id]->setTaskName(task_name);
-//     tasks[task_id]->setDate(date);
-//     tasks[task_id]->setDescription(description);
-//     tasks[task_id]->setState(state);
-// }
+QVector<Task*>::iterator begin(TaskList &x){return x.tasks.begin();}
 
-// void TaskList::setState(int task_id, const State state)
-// {
-//     (*tasks[task_id]).setState(state);
-// }
-
-QSet<Task*>::iterator begin(TaskList &x){return x.tasks.begin();}
-
-QSet<Task*>::iterator end(TaskList &x){return x.tasks.end();}
+QVector<Task*>::iterator end(TaskList &x){return x.tasks.end();}

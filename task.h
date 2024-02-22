@@ -17,7 +17,6 @@ class Task
 
 public:
     explicit Task();
-
     Task(QString task_name);
     Task(QString task_name, QDate date);
     Task(QString task_name, QDate date, QString description);
@@ -33,7 +32,6 @@ public:
     void changeState();
     QJsonObject convertToJson() const;
     static Task* createFromJson(QJsonObject json);
-signals:
 
 private:
     QString task_name;

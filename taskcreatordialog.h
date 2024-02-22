@@ -1,19 +1,18 @@
 #ifndef TASKCREATORDIALOG_H
 #define TASKCREATORDIALOG_H
 
+#include <QCalendarWidget>
+#include <QComboBox>
 #include <QDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
 #include <QVariant>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLabel>
-#include <QCalendarWidget>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QMessageBox>
 
 #include "task.h"
-
 
 class TaskCreatorDialog : public QDialog
 {
@@ -32,13 +31,17 @@ public slots:
 
 private:
     Task default_task;
-    QCalendarWidget* calendarWidget;
-    QLabel *taskNameLabel;
-    QLineEdit* taskNameEdit;
-    QLabel *taskDescriptionLabel;
-    QLineEdit* taskDescriptionEdit;
-    QLabel *taskStateLabel;
-    QComboBox* taskStateEdit;
+
+    QCalendarWidget* calendar_widget;
+    QLabel *task_name_label;
+    QLineEdit* task_name_edit;
+    QLabel *task_description_label;
+    QLineEdit* task_description_edit;
+    QLabel *task_state_label;
+    QComboBox* task_state_edit;
+
+    QPushButton* ok_button;
+    QPushButton* cancel_button;
 };
 
 #endif // TASKCREATORDIALOG_H

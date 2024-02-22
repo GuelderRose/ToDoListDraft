@@ -1,19 +1,19 @@
 #ifndef TASKWIDGET_H
 #define TASKWIDGET_H
 
-#include <QWidget>
-#include <QLabel>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QCheckBox>
-#include <QPixmap>
 #include <QCoreApplication>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QListWidgetItem>
+#include <QPixmap>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
+#include <QPalette>
 
 #include "task.h"
-
 
 class TaskWidget : public QWidget
 {
@@ -24,16 +24,19 @@ public:
     //QSize sizeHint() const override;
     void updateView(const Task * task);
     void changeTaskState();
+
 signals:
-    void task_deleted(TaskWidget* task);
-    void task_changed(TaskWidget* task);
-    void task_edited(TaskWidget* task);
+    void taskDeleted(TaskWidget* task);
+    void taskChanged(TaskWidget* task);
+    void taskEdited(TaskWidget* task);
+
 private slots:
-    void on_delete_button_clicked();
-    void on_edit_button_clicked();
-    void on_check_box_clicked();
+    void onDeleteButtonClicked();
+    void onEditButtonClicked();
+    void onCheckBoxClicked();
 
 private:
+    QFrame *task_frame;
     QHBoxLayout *h_box;
 
     QVBoxLayout *v_option_box;
@@ -47,7 +50,6 @@ private:
     QLabel *task_name;
     QLabel *task_date;
     QLabel *task_description;
-
 };
 
 #endif // TASKWIDGET_H

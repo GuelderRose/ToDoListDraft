@@ -15,6 +15,8 @@ MainWidget::MainWidget(QWidget *parent)
 
     // Adding filters
 
+    QFrame *filter_frame = new QFrame(this);
+
     QHBoxLayout *h_filter_box = new QHBoxLayout();
 
     QHBoxLayout *h_state_date_box = new QHBoxLayout();
@@ -23,8 +25,20 @@ MainWidget::MainWidget(QWidget *parent)
 
     QVBoxLayout *v_state_box = new QVBoxLayout();
 
+    QHBoxLayout *h_label_state_box = new QHBoxLayout();
+
     state_filter_label=new QLabel("State:");
-    v_state_box->addWidget(state_filter_label);
+    h_label_state_box->addWidget(state_filter_label);
+
+    reset_filter_by_state_button = new QPushButton(this);
+    connect(reset_filter_by_state_button, &QPushButton::clicked, this,&MainWidget::resetStateFilter);
+
+    reset_one_filter_icon = QPixmap("icons/cross.png");
+    reset_filter_by_state_button->setIcon(reset_one_filter_icon);
+    reset_filter_by_state_button->setStyleSheet("border-radius: 25px");
+    h_label_state_box->addWidget(reset_filter_by_state_button);
+    h_label_state_box->setAlignment(Qt::AlignLeft);
+    v_state_box->addLayout(h_label_state_box);
 
     task_state_filter = new QComboBox();
     task_state_filter->addItems({"In Progress", "Done", "All"});
@@ -36,8 +50,20 @@ MainWidget::MainWidget(QWidget *parent)
 
     QVBoxLayout *v_date_box = new QVBoxLayout();
 
+    QHBoxLayout *h_label_date_box = new QHBoxLayout();
+
     date_filter_label=new QLabel("Dates:");
-    v_date_box->addWidget(date_filter_label);
+    h_label_date_box->addWidget(date_filter_label);
+
+    reset_filter_by_date_button = new QPushButton(this);
+    connect(reset_filter_by_date_button, &QPushButton::clicked, this,&MainWidget::resetDateFilter);
+
+    reset_one_filter_icon = QPixmap("icons/cross.png");
+    reset_filter_by_date_button->setIcon(reset_one_filter_icon);
+    reset_filter_by_date_button->setStyleSheet("border-radius: 25px");
+    h_label_date_box->addWidget(reset_filter_by_date_button);
+    h_label_date_box->setAlignment(Qt::AlignLeft);
+    v_date_box->addLayout(h_label_date_box);
 
     QHBoxLayout *h_dates_box = new QHBoxLayout();
     auto dates = getDefaultDatesForFilterWidget();
@@ -71,8 +97,20 @@ MainWidget::MainWidget(QWidget *parent)
 
     QVBoxLayout *v_name_box = new QVBoxLayout();
 
+    QHBoxLayout *h_label_name_box = new QHBoxLayout();
+
     name_filter_label = new QLabel("By name:");
-    v_name_box->addWidget(name_filter_label);
+    h_label_name_box->addWidget(name_filter_label);
+
+    reset_filter_by_name_button = new QPushButton(this);
+    connect(reset_filter_by_name_button, &QPushButton::clicked, this,&MainWidget::resetNameFilter);
+
+    reset_one_filter_icon = QPixmap("icons/cross.png");
+    reset_filter_by_name_button->setIcon(reset_one_filter_icon);
+    reset_filter_by_name_button->setStyleSheet("border-radius: 25px");
+    h_label_name_box->addWidget(reset_filter_by_name_button);
+    h_label_name_box->setAlignment(Qt::AlignLeft);
+    v_name_box->addLayout(h_label_name_box);
 
     search_by_name_line = new QLineEdit();
     search_by_name_line->setMaximumWidth(150);
@@ -82,8 +120,20 @@ MainWidget::MainWidget(QWidget *parent)
 
     QVBoxLayout *v_desc_box = new QVBoxLayout();
 
+    QHBoxLayout *h_label_desc_box = new QHBoxLayout();
+
     desc_filter_label = new QLabel("By description:");
-    v_desc_box->addWidget(desc_filter_label);
+    h_label_desc_box->addWidget(desc_filter_label);
+
+    reset_filter_by_desc_button = new QPushButton(this);
+    connect(reset_filter_by_desc_button, &QPushButton::clicked, this,&MainWidget::resetDescriptionFilter);
+
+    reset_one_filter_icon = QPixmap("icons/cross.png");
+    reset_filter_by_desc_button->setIcon(reset_one_filter_icon);
+    reset_filter_by_desc_button->setStyleSheet("border-radius: 25px");
+    h_label_desc_box->addWidget(reset_filter_by_desc_button);
+    h_label_desc_box->setAlignment(Qt::AlignLeft);
+    v_desc_box->addLayout(h_label_desc_box);
 
     search_by_desc_line = new QLineEdit();
     search_by_desc_line->setMaximumWidth(180);
@@ -100,64 +150,68 @@ MainWidget::MainWidget(QWidget *parent)
     v_filter_box->setAlignment(Qt::AlignLeft);
 
 
-    // ----- Adding reset button
+    // ----- Adding reset all filters button
 
     reset_all_filters_button = new QPushButton(this);
     reset_filters_icon = QPixmap("icons/reset_filters.png");
     reset_all_filters_button->setIcon(reset_filters_icon);
 
-
     h_filter_box->addLayout(v_filter_box);
     h_filter_box->addWidget(reset_all_filters_button);
 
+    filter_frame->setLayout(h_filter_box);
+    filter_frame->setMaximumWidth(325);
 
     // Adding task widget list
 
     task_widget_list = new QListWidget(this);
     task_widget_list->setMinimumSize(QSize(300,420));
-    task_widget_list->setSpacing(10);
+    task_widget_list->setSpacing(3);
     initTaskWidgetList(showed_task_list);
+
     // Adding add task button
 
     add_task_button = new QPushButton("Add task",this);
-    //add_task_button->setMinimumSize(QSize(340,50));
+    add_task_button->setMinimumSize(QSize(300,50));
 
     v_box->addWidget(filter_label);
-    v_box->addLayout(h_filter_box);
+    //v_box->addLayout(h_filter_box);
+    v_box->addWidget(filter_frame);
     v_box->addWidget(task_widget_list);
     v_box->addWidget(add_task_button);
 
     setLayout(v_box);
 
-    connect(add_task_button, &QPushButton::clicked, this,&MainWidget::on_add_task_button_clicked);
-
+    connect(add_task_button, &QPushButton::clicked, this,&MainWidget::onAddTaskButtonClicked);
     connect(search_by_name_line, &QLineEdit::textChanged, this, &MainWidget::redrawView);
     connect(search_by_desc_line, &QLineEdit::textChanged, this, &MainWidget::redrawView);
     connect(task_state_filter, &QComboBox::currentIndexChanged, this, &MainWidget::redrawView);
     connect(left_date_edit, &QDateEdit::dateChanged, this, &MainWidget::redrawView);
     connect(right_date_edit, &QDateEdit::dateChanged, this, &MainWidget::redrawView);
-
     connect(reset_all_filters_button, &QPushButton::clicked, this, &MainWidget::resetFilters);
+
 
     redrawView();
 }
 
 MainWidget::~MainWidget() {}
 
-std::pair<QDate, QDate> MainWidget::getDefaultDatesForFilterWidget(){
+std::pair<QDate, QDate> MainWidget::getDefaultDatesForFilterWidget()
+{
     std::pair<QDate, QDate> res = {full_task_list.getMinDate(), full_task_list.getMaxDate()};
     if(res.first.isValid())
         return res;
     return {QDate::currentDate(), QDate::currentDate()};
 }
 
-void MainWidget::redrawView(){
+void MainWidget::redrawView()
+{
     updateFiltredTaskList();
     initTaskWidgetList(showed_task_list);
 }
 
-void MainWidget::resetFilters(){
-    task_state_filter->setCurrentIndex(2);
+void MainWidget::resetDateFilter()
+{
     auto dates = getDefaultDatesForFilterWidget();
     left_date_edit->blockSignals(true);
     right_date_edit->blockSignals(true);
@@ -165,8 +219,42 @@ void MainWidget::resetFilters(){
     right_date_edit->setDate(dates.second);
     left_date_edit->blockSignals(false);
     right_date_edit->blockSignals(false);
+    redrawView();
+}
+
+void MainWidget::resetStateFilter()
+{
+    task_state_filter->setCurrentIndex(0);
+    redrawView();
+}
+
+void MainWidget::resetNameFilter()
+{
+    search_by_name_line->clear();
+    redrawView();
+}
+void MainWidget::resetDescriptionFilter()
+{
+    search_by_desc_line->clear();
+    redrawView();
+}
+
+
+void MainWidget::resetFilters()
+{
+    task_state_filter->setCurrentIndex(0);
+
+    auto dates = getDefaultDatesForFilterWidget();
+    left_date_edit->blockSignals(true);
+    right_date_edit->blockSignals(true);
+    left_date_edit->setDate(dates.first);
+    right_date_edit->setDate(dates.second);
+    left_date_edit->blockSignals(false);
+    right_date_edit->blockSignals(false);
+
     search_by_name_line->clear();
     search_by_desc_line->clear();
+
     redrawView();
 }
 
@@ -199,58 +287,65 @@ void MainWidget::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
-void MainWidget::updateFiltredTaskList() {
+void MainWidget::updateFiltredTaskList()
+{
     showed_task_list = full_task_list;
     showed_task_list = showed_task_list.filterByName(search_by_name_line->text());
     showed_task_list = showed_task_list.filterByDescription(search_by_desc_line->text());
     showed_task_list = showed_task_list.filterFromDate(left_date_edit->date());
     showed_task_list = showed_task_list.filterToDate(right_date_edit->date());
+
     if(task_state_filter->currentText() != "All")
         showed_task_list = showed_task_list.filterByState(State(task_state_filter->currentIndex()));
 }
 
-Task* MainWidget::getCorrespondingTask(TaskWidget * task_widget){
+Task* MainWidget::getCorrespondingTask(TaskWidget * task_widget)
+{
     for(int i = 0; i < showed_tasks.size();i++)
         if(showed_tasks[i].first == task_widget)
             return showed_tasks[i].second;
+
     return nullptr;
 }
 
-void MainWidget::on_add_task_button_clicked()
+void MainWidget::onAddTaskButtonClicked()
 {
     Task* new_task = new Task();
     QVariant updated_task = TaskCreatorDialog::getTask(*new_task, this);
+
     if (updated_task.isValid())
     {
         *new_task = updated_task.value<Task>();
         full_task_list.addTask(new_task);
         new_task->convertToJson();
-        resetFilters();
+        resetDateFilter();
+        //resetFilters();
         redrawView();
     }
     else
         delete new_task;
 }
 
-void MainWidget::on_delete_widget_button_clicked(TaskWidget *task_widget)
+void MainWidget::onDeleteWidgetButtonClicked(TaskWidget *task_widget)
 {
     Task* task = getCorrespondingTask(task_widget);
     full_task_list.deleteTask(task);
     redrawView();
 }
 
-void MainWidget::on_check_box_clicked(TaskWidget *task_widget)
+void MainWidget::onCheckBoxClicked(TaskWidget *task_widget)
 {
     Task* task = getCorrespondingTask(task_widget);
     task->changeState();
-    resetFilters();
+    //resetFilters();
     redrawView();
 }
 
-void MainWidget::on_edit_widget_button_clicked(TaskWidget *task_widget)
+void MainWidget::onEditWidgetButtonClicked(TaskWidget *task_widget)
 {
     Task* task = getCorrespondingTask(task_widget);
     QVariant updated_task = TaskCreatorDialog::getTask(*task, this);
+
     if (updated_task.isValid())
     {
         *task = updated_task.value<Task>();
@@ -264,6 +359,7 @@ void MainWidget::updateTaskWidgetList() // Redraw all tasks from current existin
 {
     task_widget_list->clear();
     QVector<std::pair<TaskWidget*, Task*>> new_view;
+
     for(auto task_item: showed_tasks){
         TaskWidget* new_task_widget = new TaskWidget(task_item.second, this);
         drawNewTaskWidget(task_item.second, new_task_widget);
@@ -272,10 +368,11 @@ void MainWidget::updateTaskWidgetList() // Redraw all tasks from current existin
     showed_tasks = std::move(new_view);
 }
 
-void MainWidget::initTaskWidgetList(TaskList& tasks) //Draw whole list of tasks from TaskList. Use for filtred/loaded view
+void MainWidget::initTaskWidgetList(TaskList& tasks) //Draw the whole list of tasks from TaskList. Use for filtred/loaded view
 {
     task_widget_list->clear();
     showed_tasks.clear();
+
     for(Task* task: tasks)
     {
         TaskWidget* new_task_widget = new TaskWidget(task, this);
@@ -292,9 +389,9 @@ void MainWidget::drawNewTaskWidget(Task *task, TaskWidget *task_widget)
 
     task_widget_list->addItem(item);
     task_widget_list->setItemWidget(item,task_widget);
-
-    connect(task_widget, &TaskWidget::task_deleted, this, &MainWidget::on_delete_widget_button_clicked);
-    connect(task_widget, &TaskWidget::task_edited, this, &MainWidget::on_edit_widget_button_clicked);
-    connect(task_widget, &TaskWidget::task_changed, this, &MainWidget::on_check_box_clicked);
+    
+    connect(task_widget, &TaskWidget::taskDeleted, this, &MainWidget::onDeleteWidgetButtonClicked);
+    connect(task_widget, &TaskWidget::taskEdited, this, &MainWidget::onEditWidgetButtonClicked);
+    connect(task_widget, &TaskWidget::taskChanged, this, &MainWidget::onCheckBoxClicked);
 }
 
